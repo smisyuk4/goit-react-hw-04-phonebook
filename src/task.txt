@@ -1,0 +1,24 @@
+Крок 1
+Взяти старий проект та переробити на Формік
+https://www.youtube.com/watch?v=JGzbyfbfo7M 
+https://formik.org/docs/overview
+
+ npm install formik --save
+
+
+ Крок 2
+ Додати валідацію полів
+ https://www.npmjs.com/package/yup
+
+ npm i yup
+
+ Крок 3
+ Зробити проптайпи
+ https://www.npmjs.com/package/prop-types
+
+ npm i prop-types
+
+ Крок 4
+ Робота з локальним сховищем
+ - Під час завантаження застосунку контакти, якщо такі є, зчитуються з локального сховища і записуються у стан.
+ - Під час додавання та видалення контакту контакти зберігаються у локальне сховище.

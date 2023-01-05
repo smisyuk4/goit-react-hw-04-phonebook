@@ -18,29 +18,25 @@ const INITIAL_CONTACTS = [
   { id: 'id-10', name: 'Spiderman', number: '36363-99-55' },
 ]
 
+//custom hook
+const useLocalStorage = (key, defaultValue) => {
+  const [state, setState] = useState(() => {
+    return JSON.parse(localStorage.getItem(key)) ?? defaultValue
+  })
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(state))
+  },[key, state])
+
+  return [state, setState]
+}
+
 export const App =()=>{
-  const [contacts, setContact] = useState([...INITIAL_CONTACTS])
   const [filter, setFilter] = useState('')
-
-  useEffect(() => {
-    let contactsLocal = localStorage.getItem('contacts')
-
-    if (contactsLocal) {
-      contactsLocal = JSON.parse(contactsLocal)
-      setContact([...contactsLocal])
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts))
-      
-    if (contacts.length === 0) {
-      localStorage.removeItem('contacts')
-    }
-  },[contacts])
+  const [contacts, setContact] = useLocalStorage('contacts', [...INITIAL_CONTACTS])
 
   const submitContact = (newContact) => {
-    setContact([...contacts, newContact])
+    setContact(prevState => [...prevState, newContact])
   }
 
   const filterContact = ({ currentTarget }, actions) => {
@@ -57,8 +53,8 @@ export const App =()=>{
   };
 
   const onClickBtnRemove = (idContact) => {
-    const contactLists = contacts.filter(item => item.id !== idContact)  
-    setContact([...contactLists])
+    const contacstList = contacts.filter(item => item.id !== idContact)  
+    setContact([...contacstList])
 
     Notify.success(
     'The contact has been remove from storage',

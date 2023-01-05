@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
 import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -41,20 +40,15 @@ const contactSchema = Yup.object().shape({
         .required(),
 });
 
-export class ContactForm extends Component {
-    state = {
-        name: '',
-        number: '',
-    };
-
-    sendContact = ({ name, number }, { resetForm }) => {
+export const ContactForm = ({ onSubmit, contactsBase }) => {
+    const sendContact = ({ name, number }, { resetForm }) => {
         const contactId = nanoid();
         const newContact = { name, number, id: contactId };
 
         // check uniq contact
-        if (!this.checkUniq(name)) {
+        if (!checkUniq(name)) {
             //move data to App
-            this.props.onSubmit(newContact);
+            onSubmit(newContact);
             Notify.success('The contact has been sent to storage', {
                 position: 'center-top',
             });
@@ -68,55 +62,46 @@ export class ContactForm extends Component {
         }
     };
 
-    checkUniq = name => {
-        const contactsBase = this.props.contactsBase;
+    const checkUniq = name => {
         const newName = name.toLowerCase();
-
         return contactsBase.find(({ name }) => name.toLowerCase() === newName);
     };
 
-    render() {
-        return (
-            <Formik
-                initialValues={this.state}
-                onSubmit={this.sendContact}
-                validationSchema={contactSchema}
-            >
-                <FormWrp autoComplete="off">
-                    <LabelForm>
-                        <IconContext.Provider
-                            value={{ className: 'global-icon' }}
-                        >
-                            <RiContactsFill />
-                        </IconContext.Provider>
-                        Name:
-                        <InputForm type="text" name="name" />
-                        <ErrorMessage name="name" component={InputError} />
-                    </LabelForm>
-                    <LabelForm>
-                        <IconContext.Provider
-                            value={{ className: 'global-icon' }}
-                        >
-                            <RiUserVoiceFill />
-                        </IconContext.Provider>
-                        Number:
-                        <InputForm type="tel" name="number" />
-                        <ErrorMessage name="number" component={InputError} />
-                    </LabelForm>
-                    <ButtonForm type="submit">
-                        <IconContext.Provider
-                            value={{ className: 'global-icon' }}
-                        >
-                            <RiUserFollowFill />
-                        </IconContext.Provider>
-                        Add contact
-                    </ButtonForm>
-                </FormWrp>
-            </Formik>
-        );
-    }
-}
+    return (
+        <Formik
+            initialValues={{ name: '', number: '' }}
+            onSubmit={sendContact}
+            validationSchema={contactSchema}
+        >
+            <FormWrp autoComplete="off">
+                <LabelForm>
+                    <IconContext.Provider value={{ className: 'global-icon' }}>
+                        <RiContactsFill />
+                    </IconContext.Provider>
+                    Name:
+                    <InputForm type="text" name="name" />
+                    <ErrorMessage name="name" component={InputError} />
+                </LabelForm>
+                <LabelForm>
+                    <IconContext.Provider value={{ className: 'global-icon' }}>
+                        <RiUserVoiceFill />
+                    </IconContext.Provider>
+                    Number:
+                    <InputForm type="tel" name="number" />
+                    <ErrorMessage name="number" component={InputError} />
+                </LabelForm>
+                <ButtonForm type="submit">
+                    <IconContext.Provider value={{ className: 'global-icon' }}>
+                        <RiUserFollowFill />
+                    </IconContext.Provider>
+                    Add contact
+                </ButtonForm>
+            </FormWrp>
+        </Formik>
+    );
+};
 
 ContactForm.propTypes = {
     onSubmit: PropTypes.func.isRequired,
+    contactsBase: PropTypes.array.isRequired,
 };
